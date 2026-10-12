@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 namespace yapparov {
-int func();
+  int func();
 }
 
 int main() {
@@ -18,22 +18,22 @@ int main() {
 }
 
 namespace yapparov {
-int func() {
-  int x = 0;
-  int min = 0;
-  int count = 0;
+  int func() {
+    int x = 0;
+    int min = 0;
+    int count = 0;
 
-  while (std::cin >> x) {
-    if (x == 0) {
-      return count;
+    while (std::cin >> x) {
+      if (x == 0) {
+        return count;
+      }
+      if (count == 0 || x < min) {
+        min = x;
+        count = 1;
+      } else if (x == min) {
+        ++count;
+      }
     }
-    if (count == 0 || x < min) {
-      min = x;
-      count = 1;
-    } else if (x == min) {
-      ++count;
-    }
+    throw std::invalid_argument("invalid x");
   }
-  throw std::invalid_argument("invalid x");
 }
-} // namespace yapparov

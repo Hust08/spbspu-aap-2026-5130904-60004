@@ -148,8 +148,8 @@ namespace yapparov
 
   size_t numRow(const int *data, size_t str, size_t stb)
   {
-    size_t bestRow = 0;
-    size_t bestLen = 0;
+    size_t best_row = 0;
+    size_t best_len = 0;
     for (size_t i = 0; i < str; ++i)
     {
       size_t cur = 0;
@@ -164,14 +164,14 @@ namespace yapparov
           cur = 1;
         }
 
-        if (cur > bestLen)
+        if (cur > best_len)
         {
-          bestLen = cur;
-          bestRow = i + 1;
+          best_len = cur;
+          best_row = i + 1;
         }
       }
     }
-    return bestRow;
+    return best_row;
   }
 }
 

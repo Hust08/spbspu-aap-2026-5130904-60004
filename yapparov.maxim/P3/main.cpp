@@ -70,10 +70,6 @@ int main(int argc, char **argv)
     size_t result = 0;
     if (mode == 1)
     {
-      if (n > yapparov::maxElements)
-      {
-        throw std::runtime_error("Matrix is too large for fixed array");
-      }
       int data[yapparov::maxElements];
       for (size_t i = 0; i < n; ++i)
       {
@@ -156,4 +152,3 @@ namespace yapparov
     return best_row;
   }
 }
-

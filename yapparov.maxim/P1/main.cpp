@@ -15,12 +15,30 @@ namespace yapparov
     void operator()(int next);
     int operator()() const;
   };
+  int func();
+}
 
-  MinCounter::MinCounter() :
+int main()
+{
+  try
+  {
+    const int result = yapparov::func();
+    std::cout << result << "\n";
+    return 0;
+  }
+  catch (const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+    return 1;
+  }
+}
+
+namespace yapparov
+{
+  MinCounter::MinCounter():
     min_(0),
     count_(0)
   {}
-
   void MinCounter::operator()(int next)
   {
     if (count_ == 0 || next < min_)
@@ -33,7 +51,6 @@ namespace yapparov
       ++count_;
     }
   }
-
   int MinCounter::operator()() const
   {
     return count_;
@@ -51,20 +68,5 @@ namespace yapparov
       count(x);
     }
     throw std::invalid_argument("invalid x");
-  }
-}
-
-int main()
-{
-  try
-  {
-    const int result = yapparov::func();
-    std::cout << result << "\n";
-    return 0;
-  }
-  catch (const std::exception& e)
-  {
-    std::cerr << e.what() << '\n';
-    return 1;
   }
 }

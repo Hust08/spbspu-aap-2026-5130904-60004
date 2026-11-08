@@ -4,7 +4,54 @@
 
 namespace yapparov
 {
-  int func();
+  class MinCounter
+  {
+  private:
+    int min_;
+    int count_;
+
+  public:
+    MinCounter();
+    void operator()(int next);
+    int operator()() const;
+  };
+
+  MinCounter::MinCounter() :
+    min_(0),
+    count_(0)
+  {}
+
+  void MinCounter::operator()(int next)
+  {
+    if (count_ == 0 || next < min_)
+    {
+      min_ = next;
+      count_ = 1;
+    }
+    else if (next == min_)
+    {
+      ++count_;
+    }
+  }
+
+  int MinCounter::operator()() const
+  {
+    return count_;
+  }
+  int func()
+  {
+    MinCounter count;
+    int x = 0;
+    while (std::cin >> x)
+    {
+      if (x == 0)
+      {
+        return count();
+      }
+      count(x);
+    }
+    throw std::invalid_argument("invalid x");
+  }
 }
 
 int main()
@@ -15,37 +62,9 @@ int main()
     std::cout << result << "\n";
     return 0;
   }
-  catch (const std::exception &e)
+  catch (const std::exception& e)
   {
     std::cerr << e.what() << '\n';
     return 1;
-  }
-}
-
-namespace yapparov
-{
-  int func()
-  {
-    int x = 0;
-    int min = 0;
-    int count = 0;
-
-    while (std::cin >> x)
-    {
-      if (x == 0)
-      {
-        return count;
-      }
-      if (count == 0 || x < min)
-      {
-        min = x;
-        count = 1;
-      }
-      else if (x == min)
-      {
-        ++count;
-      }
-    }
-    throw std::invalid_argument("invalid x");
   }
 }

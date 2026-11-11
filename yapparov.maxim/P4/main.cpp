@@ -48,7 +48,7 @@ namespace yapparov
     size_t size = per_size;
     size_t len = 0;
     char *str = new char[size];
-    char symb = '\0';
+    char symb = 0;
     while (in.get(symb) && symb != '\n')
     {
       if (len + 1 >= size)

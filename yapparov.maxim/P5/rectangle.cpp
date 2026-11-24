@@ -1,17 +1,18 @@
+
 #include "rectangle.hpp"
 #include <stdexcept>
 
 namespace yapparov
 {
-    Rectangle::Rectangle(double width, double height, const point_t& center)
+    Rectangle::Rectangle(double width, double height, const point_t& cent) :
+        width_(width),
+        height_(height),
+        cent_(cent)
     {
-        if (width <= 0.0 || height <= 0.0)
+        if (width_ <= 0.0 || height_ <= 0.0)
         {
             throw std::invalid_argument("invalid rectangle");
         }
-        width_ = width;
-        height_ = height;
-        cent_ = center;
     }
 
     double Rectangle::getArea() const

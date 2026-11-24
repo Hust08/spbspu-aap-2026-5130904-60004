@@ -1,8 +1,6 @@
-
 #include <algorithm>
 #include <iostream>
 #include <stdexcept>
-
 #include "base-types.hpp"
 #include "complexquad.hpp"
 #include "polygon.hpp"
@@ -11,6 +9,12 @@
 
 namespace yapparov
 {
+    const double half = 2.0;
+    const double rectangle_width = 4.0;
+    const double rectangle_height = 2.0;
+    const double max_coordinate = 5.0;
+    const int polygon_vertex_count = 5;
+
     void scaleShapes(Shape** shapes, int count, const point_t& p, double k)
     {
         if (k <= 0.0)
@@ -30,26 +34,26 @@ namespace yapparov
 
     rectangle_t totalFrame(Shape** shapes, int count)
     {
-        rectangle_t first = shapes[0]->getFrameRect();
-        double min_x = first.pos.x - first.width / 2.0;
-        double max_x = first.pos.x + first.width / 2.0;
-        double min_y = first.pos.y - first.height / 2.0;
-        double max_y = first.pos.y + first.height / 2.0;
+        const rectangle_t first = shapes[0]->getFrameRect();
+        double min_x = first.pos.x - first.width / half;
+        double max_x = first.pos.x + first.width / half;
+        double min_y = first.pos.y - first.height / half;
+        double max_y = first.pos.y + first.height / half;
 
         for (int i = 1; i < count; i++)
         {
             const rectangle_t r = shapes[i]->getFrameRect();
-            min_x = std::min(min_x, r.pos.x - r.width / 2.0);
-            max_x = std::max(max_x, r.pos.x + r.width / 2.0);
-            min_y = std::min(min_y, r.pos.y - r.height / 2.0);
-            max_y = std::max(max_y, r.pos.y + r.height / 2.0);
+            min_x = std::min(min_x, r.pos.x - r.width / half);
+            max_x = std::max(max_x, r.pos.x + r.width / half);
+            min_y = std::min(min_y, r.pos.y - r.height / half);
+            max_y = std::max(max_y, r.pos.y + r.height / half);
         }
 
         rectangle_t rect;
         rect.width = max_x - min_x;
         rect.height = max_y - min_y;
-        rect.pos.x = (min_x + max_x) / 2.0;
-        rect.pos.y = (min_y + max_y) / 2.0;
+        rect.pos.x = (min_x + max_x) / half;
+        rect.pos.y = (min_y + max_y) / half;
         return rect;
     }
 
@@ -89,9 +93,14 @@ int main()
 
     try
     {
-        Rectangle rect(4.0, 2.0, {0.0, 0.0});
-        Complexquad quad({1, 1}, {5, 5}, {5, 1}, {1, 5});
-        Polygon poly(fiveSidedPolygon, 5);
+        Rectangle rect(rectangle_width, rectangle_height, {0.0, 0.0});
+        Complexquad quad(
+            {1, 1},
+            {max_coordinate, max_coordinate},
+            {max_coordinate, 1},
+            {1, max_coordinate}
+        );
+        Polygon poly(fiveSidedPolygon, polygon_vertex_count);
 
         const int shape_count = 3;
         Shape* shapes[shape_count] = { &rect, &quad, &poly };
@@ -121,5 +130,6 @@ int main()
         std::cerr << e.what() << "\n";
         return 1;
     }
+
     return 0;
 }

@@ -1,36 +1,27 @@
+
 #include "polygon.hpp"
-#include <algorithm>
 #include <stdexcept>
 
 namespace yapparov
 {
-    Polygon::Polygon(const point_t* ver, int size)
+    Polygon::Polygon(const point_t* ver, int size) :
+        cent_{ 0.0, 0.0 },
+        ver_(nullptr),
+        size_(size)
     {
-        if (size < 3 || ver == nullptr)
+        if (ver == nullptr || size < 3)
         {
             throw std::invalid_argument("invalid polygon");
         }
-        size_ = size;
         ver_ = new point_t[size_];
-        double sum = 0;
-        double cx = 0;
-        double cy = 0;
         for (int i = 0; i < size_; i++)
         {
             ver_[i] = ver[i];
-            int j = (i + 1) % size_;
-            double s = ver[i].x * ver[j].y - ver[j].x * ver[i].y;
-            sum += s;
-            cx += (ver[i].x + ver[j].x) * s;
-            cy += (ver[i].y + ver[j].y) * s;
+            cent_.x += ver[i].x;
+            cent_.y += ver[i].y;
         }
-        if (sum == 0)
-        {
-            delete[] ver_;
-            throw std::invalid_argument("zero area");
-        }
-        cent_.x = cx / (3 * sum);
-        cent_.y = cy / (3 * sum);
+        cent_.x /= size_;
+        cent_.y /= size_;
     }
 
     Polygon::Polygon(const Polygon& p) :
@@ -43,6 +34,7 @@ namespace yapparov
             ver_[i] = p.ver_[i];
         }
     }
+
     Polygon::Polygon(Polygon&& p) noexcept :
         cent_(p.cent_),
         ver_(p.ver_),
@@ -52,17 +44,22 @@ namespace yapparov
         p.size_ = 0;
     }
 
+    Polygon::~Polygon()
+    {
+        delete[] ver_;
+    }
+
     Polygon& Polygon::operator=(const Polygon& p)
     {
         if (this != &p)
         {
-            point_t* newVer = new point_t[p.size_];
+            point_t* new_ver = new point_t[p.size_];
             for (int i = 0; i < p.size_; i++)
             {
-                newVer[i] = p.ver_[i];
+                new_ver[i] = p.ver_[i];
             }
             delete[] ver_;
-            ver_ = newVer;
+            ver_ = new_ver;
             size_ = p.size_;
             cent_ = p.cent_;
         }
@@ -82,50 +79,61 @@ namespace yapparov
         }
         return *this;
     }
-    Polygon::~Polygon()
-    {
-        delete[] ver_;
-    }
+
     double Polygon::getArea() const
     {
-        double sum = 0;
+        double sum = 0.0;
         for (int i = 0; i < size_; i++)
         {
-            int j = (i + 1) % size_;
-            sum += ver_[i].x * ver_[j].y
-                - ver_[j].x * ver_[i].y;
+            const int next = (i + 1) % size_;
+            sum += ver_[i].x * ver_[next].y -
+                ver_[next].x * ver_[i].y;
         }
-        if (sum < 0)
+        if (sum < 0.0)
         {
             sum = -sum;
         }
-        return sum / 2;
+        return sum / 2.0;
     }
 
     rectangle_t Polygon::getFrameRect() const
     {
-        double minX = ver_[0].x;
-        double maxX = ver_[0].x;
-        double minY = ver_[0].y;
-        double maxY = ver_[0].y;
+        double min_x = ver_[0].x;
+        double max_x = ver_[0].x;
+        double min_y = ver_[0].y;
+        double max_y = ver_[0].y;
         for (int i = 1; i < size_; i++)
         {
-            minX = std::min(minX, ver_[i].x);
-            maxX = std::max(maxX, ver_[i].x);
-            minY = std::min(minY, ver_[i].y);
-            maxY = std::max(maxY, ver_[i].y);
+            if (ver_[i].x < min_x)
+            {
+                min_x = ver_[i].x;
+            }
+            if (ver_[i].x > max_x)
+            {
+                max_x = ver_[i].x;
+            }
+            if (ver_[i].y < min_y)
+            {
+                min_y = ver_[i].y;
+            }
+            if (ver_[i].y > max_y)
+            {
+                max_y = ver_[i].y;
+            }
         }
         rectangle_t rect;
-        rect.width = maxX - minX;
-        rect.height = maxY - minY;
-        rect.pos.x = (minX + maxX) / 2.0;
-        rect.pos.y = (minY + maxY) / 2.0;
+        rect.width = max_x - min_x;
+        rect.height = max_y - min_y;
+        rect.pos.x = (min_x + max_x) / 2.0;
+        rect.pos.y = (min_y + max_y) / 2.0;
         return rect;
     }
 
     void Polygon::move(const point_t& p)
     {
-        move(p.x - cent_.x, p.y - cent_.y);
+        const double dx = p.x - cent_.x;
+        const double dy = p.y - cent_.y;
+        move(dx, dy);
     }
 
     void Polygon::move(double x, double y)
@@ -141,6 +149,10 @@ namespace yapparov
 
     void Polygon::scale(double k)
     {
+        if (k <= 0.0)
+        {
+            throw std::invalid_argument("invalid scale");
+        }
         for (int i = 0; i < size_; i++)
         {
             ver_[i].x = cent_.x + (ver_[i].x - cent_.x) * k;

@@ -3,43 +3,49 @@
 
 namespace yapparov
 {
-    Rectangle::Rectangle(double width, double height, const point_t& pos) :
-        rect_{width, height, pos}
+    Rectangle::Rectangle(double width, double height, const point_t& center)
     {
         if (width <= 0.0 || height <= 0.0)
         {
-            throw std::invalid_argument("width and height > 0");
+            throw std::invalid_argument("invalid rectangle");
         }
+        width_ = width;
+        height_ = height;
+        cent_ = center;
     }
 
     double Rectangle::getArea() const
     {
-        return rect_.width * rect_.height;
+        return width_ * height_;
     }
 
     rectangle_t Rectangle::getFrameRect() const
     {
-        return rect_;
+        rectangle_t rect;
+        rect.width = width_;
+        rect.height = height_;
+        rect.pos = cent_;
+        return rect;
     }
 
     void Rectangle::move(const point_t& p)
     {
-        rect_.pos = p;
+        cent_ = p;
     }
 
     void Rectangle::move(double x, double y)
     {
-        rect_.pos.x += x;
-        rect_.pos.y += y;
+        cent_.x += x;
+        cent_.y += y;
     }
 
     void Rectangle::scale(double k)
     {
         if (k <= 0.0)
         {
-            throw std::invalid_argument("k>0");
+            throw std::invalid_argument("invalid scale");
         }
-        rect_.width *= k;
-        rect_.height *= k;
+        width_ *= k;
+        height_ *= k;
     }
 }

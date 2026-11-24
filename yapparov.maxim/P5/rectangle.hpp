@@ -7,9 +7,11 @@ namespace yapparov
     class Rectangle : public Shape
     {
     private:
-        rectangle_t rect_;
+        double width_;
+        double height_;
+        point_t cent_;
     public:
-        Rectangle(double width, double height, const point_t& pos);
+        Rectangle(double width, double height, const point_t& cent);
         double getArea() const override;
         rectangle_t getFrameRect() const override;
         void move(const point_t& p) override;

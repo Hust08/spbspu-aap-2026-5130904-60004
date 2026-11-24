@@ -8,7 +8,6 @@ namespace yapparov
     public:
         double x, y;
     };
-
     class rectangle_t
     {
     public:

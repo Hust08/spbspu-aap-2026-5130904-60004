@@ -1,85 +1,97 @@
 #include "complexquad.hpp"
-#include <algorithm>
+#include <stdexcept>
 
 namespace yapparov
 {
     Complexquad::Complexquad(const point_t& a, const point_t& b, const point_t& c, const point_t& d)
     {
-        v_[0] = a;
-        v_[1] = b;
-        v_[2] = c;
-        v_[3] = d;
-        double x1 = b.x - a.x;
-        double y1 = b.y - a.y;
-        double x2 = d.x - c.x;
-        double y2 = d.y - c.y;
-        double t = ((c.x - a.x) * y2 - (c.y - a.y) * x2) / (x1 * y2 - y1 * x2);
-        c_.x = a.x + t * x1;
-        c_.y = a.y + t * y1;
+        ver_[0] = a;
+        ver_[1] = b;
+        ver_[2] = c;
+        ver_[3] = d;
+        cent_.x = (a.x + b.x + c.x + d.x) / 4.0;
+        cent_.y = (a.y + b.y + c.y + d.y) / 4.0;
     }
 
     double Complexquad::getArea() const
     {
-        double s1 = (v_[1].x - c_.x) * (v_[2].y - c_.y) - (v_[2].x - c_.x) * (v_[1].y - c_.y);
-        if (s1 < 0)
+        double sum = 0.0;
+        for (int i = 0; i < 4; i++)
         {
-            s1 = -s1;
+            const int next = (i + 1) % 4;
+            sum += ver_[i].x * ver_[next].y -
+                ver_[next].x * ver_[i].y;
         }
-        s1 = s1 / 2.0;
-        double s2 = (v_[3].x - c_.x) * (v_[0].y - c_.y) - (v_[0].x - c_.x) * (v_[3].y - c_.y);
-        if (s2 < 0)
+        if (sum < 0.0)
         {
-            s2 = -s2;
+            sum = -sum;
         }
-        s2 = s2 / 2.0;
-        return s1 + s2;
+        return sum / 2.0;
     }
 
     rectangle_t Complexquad::getFrameRect() const
     {
-        double minX = v_[0].x;
-        double maxX = v_[0].x;
-        double minY = v_[0].y;
-        double maxY = v_[0].y;
+        double min_x = ver_[0].x;
+        double max_x = ver_[0].x;
+        double min_y = ver_[0].y;
+        double max_y = ver_[0].y;
+
         for (int i = 1; i < 4; i++)
         {
-            minX = std::min(minX, v_[i].x);
-            maxX = std::max(maxX, v_[i].x);
-            minY = std::min(minY, v_[i].y);
-            maxY = std::max(maxY, v_[i].y);
+            if (ver_[i].x < min_x)
+            {
+                min_x = ver_[i].x;
+            }
+            if (ver_[i].x > max_x)
+            {
+                max_x = ver_[i].x;
+            }
+            if (ver_[i].y < min_y)
+            {
+                min_y = ver_[i].y;
+            }
+            if (ver_[i].y > max_y)
+            {
+                max_y = ver_[i].y;
+            }
         }
+
         rectangle_t rect;
-        rect.width = maxX - minX;
-        rect.height = maxY - minY;
-        rect.pos.x = (minX + maxX) / 2.0;
-        rect.pos.y = (minY + maxY) / 2.0;
+        rect.width = max_x - min_x;
+        rect.height = max_y - min_y;
+        rect.pos.x = (min_x + max_x) / 2.0;
+        rect.pos.y = (min_y + max_y) / 2.0;
         return rect;
     }
 
     void Complexquad::move(const point_t& p)
     {
-        double dx = p.x - c_.x;
-        double dy = p.y - c_.y;
+        const double dx = p.x - cent_.x;
+        const double dy = p.y - cent_.y;
         move(dx, dy);
     }
 
-    void Complexquad::move(double dx, double dy)
+    void Complexquad::move(double x, double y)
     {
         for (int i = 0; i < 4; i++)
         {
-            v_[i].x += dx;
-            v_[i].y += dy;
+            ver_[i].x += x;
+            ver_[i].y += y;
         }
-        c_.x += dx;
-        c_.y += dy;
+        cent_.x += x;
+        cent_.y += y;
     }
 
     void Complexquad::scale(double k)
     {
+        if (k <= 0.0)
+        {
+            throw std::invalid_argument("invalid scale");
+        }
         for (int i = 0; i < 4; i++)
         {
-            v_[i].x = c_.x + (v_[i].x - c_.x) * k;
-            v_[i].y = c_.y + (v_[i].y - c_.y) * k;
+            ver_[i].x = cent_.x + (ver_[i].x - cent_.x) * k;
+            ver_[i].y = cent_.y + (ver_[i].y - cent_.y) * k;
         }
     }
 }

@@ -4,6 +4,7 @@
 namespace yapparov
 {
   const double half = 2.0;
+
   Polygon::Polygon(const point_t* ver, int size)
   {
     if (ver == nullptr || size < 3)
@@ -14,7 +15,6 @@ namespace yapparov
     ver_ = new point_t[size_];
     cent_.x = 0.0;
     cent_.y = 0.0;
-
     for (int i = 0; i < size_; i++)
     {
       ver_[i] = ver[i];
@@ -58,8 +58,7 @@ namespace yapparov
   {
     if (this != &p)
     {
-      point_t* new_ver = new point_t[p.size_];
-
+      point_t* const new_ver = new point_t[p.size_];
       for (int i = 0; i < p.size_; i++)
       {
         new_ver[i] = p.ver_[i];

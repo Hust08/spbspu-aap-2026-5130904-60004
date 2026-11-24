@@ -13,13 +13,14 @@ namespace yapparov
   const double rect_width = 4.0;
   const double rect_height = 2.0;
   const int poly_count = 5;
+  const int max_coord = 5;
+
   void scaleShapes(Shape** shapes, int count, const point_t& p, double k)
   {
     if (k <= 0.0)
     {
       throw std::invalid_argument("invalid k");
     }
-
     for (int i = 0; i < count; i++)
     {
       const point_t old = shapes[i]->getFrameRect().pos;
@@ -37,6 +38,7 @@ namespace yapparov
     double max_x = first.pos.x + first.width / half;
     double min_y = first.pos.y - first.height / half;
     double max_y = first.pos.y + first.height / half;
+
     for (int i = 1; i < count; i++)
     {
       const rectangle_t r = shapes[i]->getFrameRect();
@@ -45,6 +47,7 @@ namespace yapparov
       min_y = std::min(min_y, r.pos.y - r.height / half);
       max_y = std::max(max_y, r.pos.y + r.height / half);
     }
+
     rectangle_t rect;
     rect.width = max_x - min_x;
     rect.height = max_y - min_y;
@@ -82,14 +85,15 @@ int main()
   a.x = 1;
   a.y = 1;
   point_t b;
-  b.x = 5;
-  b.y = 5;
+  b.x = max_coord;
+  b.y = max_coord;
   point_t c;
-  c.x = 5;
+  c.x = max_coord;
   c.y = 1;
   point_t d;
   d.x = 1;
-  d.y = 5;
+  d.y = max_coord;
+
   try
   {
     Rectangle rect(rect_width, rect_height, rect_pos);
@@ -104,7 +108,6 @@ int main()
     fig_names[0] = "Rectangle";
     fig_names[1] = "Complexquad";
     fig_names[2] = "Polygon";
-
     std::cout << "Before:\n";
     showInfo(shapes, fig_names, count);
     point_t p;

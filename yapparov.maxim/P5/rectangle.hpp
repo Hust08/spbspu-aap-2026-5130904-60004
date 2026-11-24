@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RECTANGLE_HPP
+#define RECTANGLE_HPP
 #include "shape.hpp"
 
 namespace yapparov
@@ -16,3 +17,5 @@ namespace yapparov
         void scale(double k) override;
     };
 }
+
+#endif

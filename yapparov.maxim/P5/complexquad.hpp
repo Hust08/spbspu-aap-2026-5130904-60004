@@ -1,4 +1,5 @@
-#pragma once
+#ifndef COMPLEXQUAD_HPP
+#define COMPLEXQUAD_HPP
 #include "shape.hpp"
 
 namespace yapparov
@@ -17,3 +18,5 @@ namespace yapparov
         void scale(double k) override;
     };
 }
+
+#endif

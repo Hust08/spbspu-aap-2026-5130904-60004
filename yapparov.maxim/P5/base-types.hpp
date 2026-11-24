@@ -1,4 +1,5 @@
-#pragma once
+#ifndef BASE_TYPES_HPP
+#define BASE_TYPES_HPP
 
 namespace yapparov
 {
@@ -15,3 +16,5 @@ namespace yapparov
         point_t pos;
     };
 }
+
+#endif

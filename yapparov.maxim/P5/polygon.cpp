@@ -4,18 +4,16 @@
 namespace yapparov
 {
   const double half = 2.0;
-
-  Polygon::Polygon(const point_t* ver, int size):
-    cent_{0.0, 0.0},
-    ver_(nullptr),
-    size_(size)
+  Polygon::Polygon(const point_t* ver, int size)
   {
     if (ver == nullptr || size < 3)
     {
       throw std::invalid_argument("invalid polygon");
     }
-
+    size_ = size;
     ver_ = new point_t[size_];
+    cent_.x = 0.0;
+    cent_.y = 0.0;
 
     for (int i = 0; i < size_; i++)
     {
@@ -23,29 +21,32 @@ namespace yapparov
       cent_.x += ver[i].x;
       cent_.y += ver[i].y;
     }
-
     cent_.x /= size_;
     cent_.y /= size_;
   }
 
-  Polygon::Polygon(const Polygon& p):
-    cent_(p.cent_),
-    ver_(new point_t[p.size_]),
-    size_(p.size_)
+  Polygon::Polygon(const Polygon& p)
   {
+    size_ = p.size_;
+    ver_ = new point_t[size_];
     for (int i = 0; i < size_; i++)
     {
       ver_[i] = p.ver_[i];
     }
+    cent_.x = p.cent_.x;
+    cent_.y = p.cent_.y;
   }
 
-  Polygon::Polygon(Polygon&& p) noexcept:
-    cent_(p.cent_),
-    ver_(p.ver_),
-    size_(p.size_)
+  Polygon::Polygon(Polygon&& p) noexcept
   {
+    ver_ = p.ver_;
+    size_ = p.size_;
+    cent_.x = p.cent_.x;
+    cent_.y = p.cent_.y;
     p.ver_ = nullptr;
     p.size_ = 0;
+    p.cent_.x = 0.0;
+    p.cent_.y = 0.0;
   }
 
   Polygon::~Polygon()
@@ -57,17 +58,17 @@ namespace yapparov
   {
     if (this != &p)
     {
-      point_t* const new_ver = new point_t[p.size_];
+      point_t* new_ver = new point_t[p.size_];
 
       for (int i = 0; i < p.size_; i++)
       {
         new_ver[i] = p.ver_[i];
       }
-
       delete[] ver_;
       ver_ = new_ver;
       size_ = p.size_;
-      cent_ = p.cent_;
+      cent_.x = p.cent_.x;
+      cent_.y = p.cent_.y;
     }
     return *this;
   }
@@ -77,13 +78,14 @@ namespace yapparov
     if (this != &p)
     {
       delete[] ver_;
-
       ver_ = p.ver_;
       size_ = p.size_;
-      cent_ = p.cent_;
-
+      cent_.x = p.cent_.x;
+      cent_.y = p.cent_.y;
       p.ver_ = nullptr;
       p.size_ = 0;
+      p.cent_.x = 0.0;
+      p.cent_.y = 0.0;
     }
     return *this;
   }
@@ -91,13 +93,11 @@ namespace yapparov
   double Polygon::getArea() const
   {
     double sum = 0.0;
-
     for (int i = 0; i < size_; i++)
     {
       const int next = (i + 1) % size_;
       sum += ver_[i].x * ver_[next].y - ver_[next].x * ver_[i].y;
     }
-
     if (sum < 0.0)
     {
       sum = -sum;
@@ -111,7 +111,6 @@ namespace yapparov
     double max_x = ver_[0].x;
     double min_y = ver_[0].y;
     double max_y = ver_[0].y;
-
     for (int i = 1; i < size_; i++)
     {
       if (ver_[i].x < min_x)
@@ -131,7 +130,6 @@ namespace yapparov
         max_y = ver_[i].y;
       }
     }
-
     rectangle_t rect;
     rect.width = max_x - min_x;
     rect.height = max_y - min_y;
@@ -154,7 +152,6 @@ namespace yapparov
       ver_[i].x += x;
       ver_[i].y += y;
     }
-
     cent_.x += x;
     cent_.y += y;
   }
@@ -165,7 +162,6 @@ namespace yapparov
     {
       throw std::invalid_argument("invalid scale");
     }
-
     for (int i = 0; i < size_; i++)
     {
       ver_[i].x = cent_.x + (ver_[i].x - cent_.x) * k;

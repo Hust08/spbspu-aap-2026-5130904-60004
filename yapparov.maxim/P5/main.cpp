@@ -10,11 +10,9 @@
 namespace yapparov
 {
   const double half = 2.0;
-  const double rectangle_width = 4.0;
-  const double rectangle_height = 2.0;
-  const double max_coordinate = 5.0;
-  const int polygon_vertex_count = 5;
-
+  const double rect_width = 4.0;
+  const double rect_height = 2.0;
+  const int poly_count = 5;
   void scaleShapes(Shape** shapes, int count, const point_t& p, double k)
   {
     if (k <= 0.0)
@@ -39,7 +37,6 @@ namespace yapparov
     double max_x = first.pos.x + first.width / half;
     double min_y = first.pos.y - first.height / half;
     double max_y = first.pos.y + first.height / half;
-
     for (int i = 1; i < count; i++)
     {
       const rectangle_t r = shapes[i]->getFrameRect();
@@ -48,7 +45,6 @@ namespace yapparov
       min_y = std::min(min_y, r.pos.y - r.height / half);
       max_y = std::max(max_y, r.pos.y + r.height / half);
     }
-
     rectangle_t rect;
     rect.width = max_x - min_x;
     rect.height = max_y - min_y;
@@ -57,22 +53,19 @@ namespace yapparov
     return rect;
   }
 
-  void showInfo(Shape** shapes, const char** names, int count)
+  void showInfo(Shape** shapes, const char** fig_names, int count)
   {
-    double total = 0.0;
-
+    double total_area = 0.0;
     for (int i = 0; i < count; i++)
     {
       const rectangle_t r = shapes[i]->getFrameRect();
       const double area = shapes[i]->getArea();
-      total += area;
-
-      std::cout << names[i] << ": area = " << area << ", width = " << r.width << ", height = " << r.height
+      total_area += area;
+      std::cout << fig_names[i] << ": area = " << area << ", width = " << r.width << ", height = " << r.height
                 << ", center = (" << r.pos.x << ", " << r.pos.y << ")\n";
     }
-
     const rectangle_t r = totalFrame(shapes, count);
-    std::cout << "Total area: " << total << "\n";
+    std::cout << "Total area: " << total_area << "\n";
     std::cout << "Total frame: width = " << r.width << ", height = " << r.height << ", center = (" << r.pos.x << ", "
               << r.pos.y << ")\n";
   }
@@ -81,41 +74,54 @@ namespace yapparov
 int main()
 {
   using namespace yapparov;
-
-  const point_t fiveSidedPolygon[] = {{0, 0}, {4, 0}, {4, 3}, {2, 5}, {0, 3}};
-
+  const point_t poly[poly_count] = {{0, 0}, {4, 0}, {4, 3}, {2, 5}, {0, 3}};
+  point_t rect_pos;
+  rect_pos.x = 0.0;
+  rect_pos.y = 0.0;
+  point_t a;
+  a.x = 1;
+  a.y = 1;
+  point_t b;
+  b.x = 5;
+  b.y = 5;
+  point_t c;
+  c.x = 5;
+  c.y = 1;
+  point_t d;
+  d.x = 1;
+  d.y = 5;
   try
   {
-    Rectangle rect(rectangle_width, rectangle_height, {0.0, 0.0});
-    Complexquad quad({1, 1}, {max_coordinate, max_coordinate}, {max_coordinate, 1}, {1, max_coordinate});
-    Polygon poly(fiveSidedPolygon, polygon_vertex_count);
-
-    const int shape_count = 3;
-    Shape* shapes[shape_count] = {&rect, &quad, &poly};
-    const char* names[shape_count] = {"Rectangle", "Complexquad", "Polygon"};
+    Rectangle rect(rect_width, rect_height, rect_pos);
+    Complexquad quad(a, b, c, d);
+    Polygon polygon(poly, poly_count);
+    const int count = 3;
+    Shape* shapes[count];
+    shapes[0] = &rect;
+    shapes[1] = &quad;
+    shapes[2] = &polygon;
+    const char* fig_names[count];
+    fig_names[0] = "Rectangle";
+    fig_names[1] = "Complexquad";
+    fig_names[2] = "Polygon";
 
     std::cout << "Before:\n";
-    showInfo(shapes, names, shape_count);
-
-    point_t p{};
+    showInfo(shapes, fig_names, count);
+    point_t p;
     double k = 0.0;
-
     std::cout << "\n";
     if (!(std::cin >> p.x >> p.y >> k))
     {
       throw std::invalid_argument("invalid input");
     }
-
-    scaleShapes(shapes, shape_count, p, k);
-
+    scaleShapes(shapes, count, p, k);
     std::cout << "\nAfter:\n";
-    showInfo(shapes, names, shape_count);
+    showInfo(shapes, fig_names, count);
   }
   catch (const std::exception& e)
   {
     std::cerr << e.what() << "\n";
     return 1;
   }
-
   return 0;
 }

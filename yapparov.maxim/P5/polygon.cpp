@@ -1,7 +1,8 @@
 #include "polygon.hpp"
 #include <stdexcept>
 
-namespace yapparov {
+namespace yapparov
+{
   const double half = 2.0;
 
   Polygon::Polygon(const point_t* ver, int size):
@@ -9,13 +10,15 @@ namespace yapparov {
     ver_(nullptr),
     size_(size)
   {
-    if (ver == nullptr || size < 3) {
+    if (ver == nullptr || size < 3)
+    {
       throw std::invalid_argument("invalid polygon");
     }
 
     ver_ = new point_t[size_];
 
-    for (int i = 0; i < size_; i++) {
+    for (int i = 0; i < size_; i++)
+    {
       ver_[i] = ver[i];
       cent_.x += ver[i].x;
       cent_.y += ver[i].y;
@@ -30,7 +33,8 @@ namespace yapparov {
     ver_(new point_t[p.size_]),
     size_(p.size_)
   {
-    for (int i = 0; i < size_; i++) {
+    for (int i = 0; i < size_; i++)
+    {
       ver_[i] = p.ver_[i];
     }
   }
@@ -51,10 +55,12 @@ namespace yapparov {
 
   Polygon& Polygon::operator=(const Polygon& p)
   {
-    if (this != &p) {
+    if (this != &p)
+    {
       point_t* const new_ver = new point_t[p.size_];
 
-      for (int i = 0; i < p.size_; i++) {
+      for (int i = 0; i < p.size_; i++)
+      {
         new_ver[i] = p.ver_[i];
       }
 
@@ -68,7 +74,8 @@ namespace yapparov {
 
   Polygon& Polygon::operator=(Polygon&& p) noexcept
   {
-    if (this != &p) {
+    if (this != &p)
+    {
       delete[] ver_;
 
       ver_ = p.ver_;
@@ -85,12 +92,14 @@ namespace yapparov {
   {
     double sum = 0.0;
 
-    for (int i = 0; i < size_; i++) {
+    for (int i = 0; i < size_; i++)
+    {
       const int next = (i + 1) % size_;
       sum += ver_[i].x * ver_[next].y - ver_[next].x * ver_[i].y;
     }
 
-    if (sum < 0.0) {
+    if (sum < 0.0)
+    {
       sum = -sum;
     }
     return sum / half;
@@ -103,17 +112,22 @@ namespace yapparov {
     double min_y = ver_[0].y;
     double max_y = ver_[0].y;
 
-    for (int i = 1; i < size_; i++) {
-      if (ver_[i].x < min_x) {
+    for (int i = 1; i < size_; i++)
+    {
+      if (ver_[i].x < min_x)
+      {
         min_x = ver_[i].x;
       }
-      if (ver_[i].x > max_x) {
+      if (ver_[i].x > max_x)
+      {
         max_x = ver_[i].x;
       }
-      if (ver_[i].y < min_y) {
+      if (ver_[i].y < min_y)
+      {
         min_y = ver_[i].y;
       }
-      if (ver_[i].y > max_y) {
+      if (ver_[i].y > max_y)
+      {
         max_y = ver_[i].y;
       }
     }
@@ -135,7 +149,8 @@ namespace yapparov {
 
   void Polygon::move(double x, double y)
   {
-    for (int i = 0; i < size_; i++) {
+    for (int i = 0; i < size_; i++)
+    {
       ver_[i].x += x;
       ver_[i].y += y;
     }
@@ -146,11 +161,13 @@ namespace yapparov {
 
   void Polygon::scale(double k)
   {
-    if (k <= 0.0) {
+    if (k <= 0.0)
+    {
       throw std::invalid_argument("invalid scale");
     }
 
-    for (int i = 0; i < size_; i++) {
+    for (int i = 0; i < size_; i++)
+    {
       ver_[i].x = cent_.x + (ver_[i].x - cent_.x) * k;
       ver_[i].y = cent_.y + (ver_[i].y - cent_.y) * k;
     }

@@ -2,7 +2,8 @@
 #include "complexquad.hpp"
 #include <stdexcept>
 
-namespace yapparov {
+namespace yapparov
+{
   const int vertex_count = 4;
   const double half = 2.0;
 
@@ -14,11 +15,13 @@ namespace yapparov {
   double Complexquad::getArea() const
   {
     double sum = 0.0;
-    for (int i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++)
+    {
       const int next = (i + 1) % vertex_count;
       sum += ver_[i].x * ver_[next].y - ver_[next].x * ver_[i].y;
     }
-    if (sum < 0.0) {
+    if (sum < 0.0)
+    {
       sum = -sum;
     }
     return sum / half;
@@ -31,17 +34,22 @@ namespace yapparov {
     double min_y = ver_[0].y;
     double max_y = ver_[0].y;
 
-    for (int i = 1; i < vertex_count; i++) {
-      if (ver_[i].x < min_x) {
+    for (int i = 1; i < vertex_count; i++)
+    {
+      if (ver_[i].x < min_x)
+      {
         min_x = ver_[i].x;
       }
-      if (ver_[i].x > max_x) {
+      if (ver_[i].x > max_x)
+      {
         max_x = ver_[i].x;
       }
-      if (ver_[i].y < min_y) {
+      if (ver_[i].y < min_y)
+      {
         min_y = ver_[i].y;
       }
-      if (ver_[i].y > max_y) {
+      if (ver_[i].y > max_y)
+      {
         max_y = ver_[i].y;
       }
     }
@@ -63,7 +71,8 @@ namespace yapparov {
 
   void Complexquad::move(double x, double y)
   {
-    for (int i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++)
+    {
       ver_[i].x += x;
       ver_[i].y += y;
     }
@@ -73,10 +82,12 @@ namespace yapparov {
 
   void Complexquad::scale(double k)
   {
-    if (k <= 0.0) {
+    if (k <= 0.0)
+    {
       throw std::invalid_argument("invalid scale");
     }
-    for (int i = 0; i < vertex_count; i++) {
+    for (int i = 0; i < vertex_count; i++)
+    {
       ver_[i].x = cent_.x + (ver_[i].x - cent_.x) * k;
       ver_[i].y = cent_.y + (ver_[i].y - cent_.y) * k;
     }

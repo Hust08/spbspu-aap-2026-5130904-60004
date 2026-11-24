@@ -2,8 +2,10 @@
 #define RECTANGLE_HPP
 #include "shape.hpp"
 
-namespace yapparov {
-  class Rectangle: public Shape {
+namespace yapparov
+{
+  class Rectangle: public Shape
+  {
   private:
     double width_;
     double height_;

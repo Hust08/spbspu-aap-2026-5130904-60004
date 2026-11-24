@@ -2,13 +2,15 @@
 #include "rectangle.hpp"
 #include <stdexcept>
 
-namespace yapparov {
+namespace yapparov
+{
   Rectangle::Rectangle(double width, double height, const point_t& cent):
     width_(width),
     height_(height),
     cent_(cent)
   {
-    if (width_ <= 0.0 || height_ <= 0.0) {
+    if (width_ <= 0.0 || height_ <= 0.0)
+    {
       throw std::invalid_argument("invalid rectangle");
     }
   }
@@ -40,7 +42,8 @@ namespace yapparov {
 
   void Rectangle::scale(double k)
   {
-    if (k <= 0.0) {
+    if (k <= 0.0)
+    {
       throw std::invalid_argument("invalid scale");
     }
     width_ *= k;

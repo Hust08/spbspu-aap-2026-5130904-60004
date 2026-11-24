@@ -2,8 +2,10 @@
 #define POLYGON_HPP
 #include "shape.hpp"
 
-namespace yapparov {
-  class Polygon: public Shape {
+namespace yapparov
+{
+  class Polygon: public Shape
+  {
   private:
     point_t cent_;
     point_t* ver_;

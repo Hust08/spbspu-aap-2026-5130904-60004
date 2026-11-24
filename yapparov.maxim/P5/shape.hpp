@@ -2,8 +2,10 @@
 #define SHAPE_HPP
 #include "base-types.hpp"
 
-namespace yapparov {
-  class Shape {
+namespace yapparov
+{
+  class Shape
+  {
   public:
     virtual ~Shape() = default;
     virtual double getArea() const = 0;

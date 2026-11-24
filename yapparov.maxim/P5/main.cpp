@@ -7,7 +7,8 @@
 #include "rectangle.hpp"
 #include "shape.hpp"
 
-namespace yapparov {
+namespace yapparov
+{
   const double half = 2.0;
   const double rectangle_width = 4.0;
   const double rectangle_height = 2.0;
@@ -16,11 +17,13 @@ namespace yapparov {
 
   void scaleShapes(Shape** shapes, int count, const point_t& p, double k)
   {
-    if (k <= 0.0) {
+    if (k <= 0.0)
+    {
       throw std::invalid_argument("invalid k");
     }
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
       const point_t old = shapes[i]->getFrameRect().pos;
       shapes[i]->move(p);
       const point_t now = shapes[i]->getFrameRect().pos;
@@ -37,7 +40,8 @@ namespace yapparov {
     double min_y = first.pos.y - first.height / half;
     double max_y = first.pos.y + first.height / half;
 
-    for (int i = 1; i < count; i++) {
+    for (int i = 1; i < count; i++)
+    {
       const rectangle_t r = shapes[i]->getFrameRect();
       min_x = std::min(min_x, r.pos.x - r.width / half);
       max_x = std::max(max_x, r.pos.x + r.width / half);
@@ -57,7 +61,8 @@ namespace yapparov {
   {
     double total = 0.0;
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++)
+    {
       const rectangle_t r = shapes[i]->getFrameRect();
       const double area = shapes[i]->getArea();
       total += area;
@@ -79,7 +84,8 @@ int main()
 
   const point_t fiveSidedPolygon[] = {{0, 0}, {4, 0}, {4, 3}, {2, 5}, {0, 3}};
 
-  try {
+  try
+  {
     Rectangle rect(rectangle_width, rectangle_height, {0.0, 0.0});
     Complexquad quad({1, 1}, {max_coordinate, max_coordinate}, {max_coordinate, 1}, {1, max_coordinate});
     Polygon poly(fiveSidedPolygon, polygon_vertex_count);
@@ -95,7 +101,8 @@ int main()
     double k = 0.0;
 
     std::cout << "\n";
-    if (!(std::cin >> p.x >> p.y >> k)) {
+    if (!(std::cin >> p.x >> p.y >> k))
+    {
       throw std::invalid_argument("invalid input");
     }
 
@@ -103,7 +110,9 @@ int main()
 
     std::cout << "\nAfter:\n";
     showInfo(shapes, names, shape_count);
-  } catch (const std::exception& e) {
+  }
+  catch (const std::exception& e)
+  {
     std::cerr << e.what() << "\n";
     return 1;
   }

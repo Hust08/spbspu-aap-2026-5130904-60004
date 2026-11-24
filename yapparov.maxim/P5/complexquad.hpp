@@ -2,8 +2,10 @@
 #define COMPLEXQUAD_HPP
 #include "shape.hpp"
 
-namespace yapparov {
-  class Complexquad: public Shape {
+namespace yapparov
+{
+  class Complexquad: public Shape
+  {
   private:
     point_t ver_[4];
     point_t cent_;
